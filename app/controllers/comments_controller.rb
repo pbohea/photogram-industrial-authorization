@@ -1,6 +1,7 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[ show edit update destroy ]
-  before_action :is_an_authorized_user, only: [:destroy, :create, :edit]
+  before_action :is_an_authorized_user, only: [:create]
+  before_action :is_an_authorized_deleter_editor, only: [:destroy, :edit]
 
   #  # GET /comments or /comments.json
   #def index
@@ -70,6 +71,13 @@ class CommentsController < ApplicationController
     if current_user != @photo.owner && @photo.owner.private? && !current_user.leaders.include?(@photo.owner)
       redirect_back fallback_location: root_url, alert: "Not authorized"
     end
+  end
+
+  def is_an_authorized_deleter_editor
+    comment = Comment.find(params.fetch(:id))
+    if current_user != comment.author
+    redirect_back fallback_location: root_url, alert: "You're not authorized for that"
+    end 
   end
 
   # Only allow a list of trusted parameters through.
