@@ -1,5 +1,6 @@
 class FollowRequestsController < ApplicationController
   before_action :set_follow_request, only: %i[ show edit update destroy ]
+  #before_action :authorized_user, only: [:show]
 
   # GET /follow_requests or /follow_requests.json
   def index
@@ -67,4 +68,12 @@ class FollowRequestsController < ApplicationController
     def follow_request_params
       params.require(:follow_request).permit(:recipient_id, :sender_id, :status)
     end
+
+    def authorized_user
+      receiver = FollowRequest.recipient_id
+      if current_user != receiver
+        redirect_back fallback_location: root_url, alert: "You're not authorized for that"
+      end
+    end
+
 end

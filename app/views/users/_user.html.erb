@@ -52,7 +52,7 @@
 
         <% end %>
       </div>
-
+      <% if user == current_user %>
       <div>
         <%=
           link_to "#",
@@ -70,6 +70,7 @@
 
         <% end %>
       </div>
+      <% end %>
     </div>
 
     <div class="row mb-3">
